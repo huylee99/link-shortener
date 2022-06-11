@@ -12,9 +12,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { sourceUrl, short } = JSON.parse(req.body) as RequestBody;
 
   if (!sourceUrl) {
-    return res
-      .status(400)
-      .send(JSON.stringify({ message: "Please send a source url" }));
+    return res.status(400).send(JSON.stringify({ message: "Please send a source url" }));
   }
 
   const data = await prisma.shortLink.create({

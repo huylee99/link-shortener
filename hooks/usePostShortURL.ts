@@ -1,18 +1,23 @@
 import { useState } from "react";
-import { prisma } from "../db/client";
+import useLocalStorage from "./useLocalStorage";
 
-type ShortUrlResponse = {
+export type ShortUrlResponse = {
   slug?: string;
   url?: string;
   id?: number;
   createdAt?: string;
 };
 
+type usePostShortURLArgs = {
+  onSuccess?: () => void;
+};
+
 type Status = "idle" | "pending" | "resolved" | "rejected";
 
-const usePostShortURL = () => {
+const usePostShortURL = ({ onSuccess }: usePostShortURLArgs) => {
   const [status, setStatus] = useState<Status>("idle");
-  const [data, setData] = useState<ShortUrlResponse>();
+  const [error, setError] = useState<string>("");
+  const [data, setData] = useLocalStorage<ShortUrlResponse>({ initialValue: [], key: "short-urls" });
 
   const isPending = status === "pending";
   const isResolved = status === "resolved";
@@ -20,21 +25,32 @@ const usePostShortURL = () => {
 
   const getShortUrl = async (data: { sourceUrl: string; short: string }) => {
     try {
+      setError("");
       setStatus("pending");
+
       const result = (await (
         await fetch(`api/generate-short-url`, {
           method: "POST",
           body: JSON.stringify({ ...data }),
         })
       ).json()) as ShortUrlResponse;
-      setData(result);
+
+      setData(prevState => [result, ...prevState]);
       setStatus("resolved");
+
+      if (typeof onSuccess !== "undefined") {
+        onSuccess();
+      }
     } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message);
+      }
+
       setStatus("rejected");
     }
   };
 
-  return { isPending, isResolved, isRejected, getShortUrl, data };
+  return { isPending, isResolved, isRejected, getShortUrl, data, error };
 };
 
 export default usePostShortURL;
