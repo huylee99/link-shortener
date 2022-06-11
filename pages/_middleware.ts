@@ -1,11 +1,16 @@
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 
-const middleware = async (req: NextRequest, ev: NextFetchEvent) => {
-  console.log("🚀 ~ file: _middleware.ts ~ line 5 ~ middleware ~ req.nextUrl.pathname", req.nextUrl.pathname);
-
-  if (req.nextUrl.pathname === "/" || req.nextUrl.pathname.startsWith("/api/")) {
+export async function middleware(req: NextRequest, ev: NextFetchEvent) {
+  if (
+    req.nextUrl.pathname === "/" ||
+    req.nextUrl.pathname.startsWith("/api/") ||
+    req.nextUrl.pathname === "/favicon.ico" ||
+    req.nextUrl.pathname === "/vercel.svg"
+  ) {
     return;
   }
+
+  console.log("🚀 ~ file: _middleware.ts ~ line 5 ~ middleware ~ req.nextUrl.pathname", req.nextUrl.pathname);
 
   const slug = req.nextUrl.pathname.split("/").pop();
 
@@ -18,6 +23,4 @@ const middleware = async (req: NextRequest, ev: NextFetchEvent) => {
   const dataJSON = await data.json();
 
   return NextResponse.redirect(dataJSON.url);
-};
-
-export default middleware;
+}

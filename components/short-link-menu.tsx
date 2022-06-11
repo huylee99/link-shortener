@@ -17,7 +17,7 @@ const ShortLinkMenu = ({ list }: ShortLinkMenuProps) => {
               <span>{`${window.location.origin}/${url.slug}`}</span>
               <button
                 className="text-sm p-1 rounded-md text-violet-500 font-medium hover:text-violet-600 transition-all"
-                onClick={() => copy(`https://shortthelong.vercel.app/${url.slug}`)}
+                onClick={() => copy(`${window.location.origin}/${url.slug}`)}
               >
                 Copy
               </button>
