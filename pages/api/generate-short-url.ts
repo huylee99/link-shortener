@@ -15,6 +15,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).send(JSON.stringify({ message: "Please send a source url" }));
   }
 
+  if (short) {
+    const isExisted = await prisma.shortLink.findFirst({
+      where: {
+        slug: short,
+      },
+    });
+
+    if (isExisted) {
+      return res.status(400).send(JSON.stringify({ message: "Short is used. Please use another Short" }));
+    }
+  }
+
   const data = await prisma.shortLink.create({
     data: {
       slug: short || randomString(10),

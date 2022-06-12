@@ -79,7 +79,9 @@ const CreateShortUrl: NextPage = () => {
             </button>
           </div>
         </div>
-        {isRejected ? <span className="block p-2 bg-red-400 text-red-600">{error}</span> : null}
+        {isRejected ? (
+          <span className="block p-2 rounded-md bg-red-200 text-red-600 border border-red-600">{error}</span>
+        ) : null}
         {data.length > 0 ? <ShortLinkMenu list={data} /> : null}
       </main>
 

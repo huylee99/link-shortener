@@ -1,20 +1,20 @@
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 
+const WHITE_LIST = ["/vercel.svg", "/favicon.ico", "/"];
+
 export async function middleware(req: NextRequest, ev: NextFetchEvent) {
   if (
+    WHITE_LIST.includes(req.nextUrl.pathname) ||
     req.nextUrl.pathname === "/" ||
-    req.nextUrl.pathname.startsWith("/api/") ||
-    req.nextUrl.pathname === "/favicon.ico" ||
-    req.nextUrl.pathname === "/vercel.svg"
+    req.nextUrl.pathname.startsWith("/api/")
   ) {
+    console.log("🚀 ~ file: _middleware.ts ~ line 11 ~ middleware ~ pathname", req.nextUrl.pathname);
     return;
   }
 
-  console.log("🚀 ~ file: _middleware.ts ~ line 5 ~ middleware ~ req.nextUrl.pathname", req.nextUrl.pathname);
-
   const slug = req.nextUrl.pathname.split("/").pop();
 
-  const data = await fetch(`${req.nextUrl.origin}/api/${slug}`);
+  const data = await fetch(`${req.nextUrl.origin}/api/get-url/${slug}`);
 
   if (data.status === 404) {
     return NextResponse.redirect(`${req.nextUrl.origin}`);

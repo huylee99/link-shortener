@@ -8,6 +8,10 @@ export type ShortUrlResponse = {
   createdAt?: string;
 };
 
+type ErrorResponse = {
+  message: string;
+};
+
 type usePostShortURLArgs = {
   onSuccess?: () => void;
 };
@@ -24,28 +28,27 @@ const usePostShortURL = ({ onSuccess }: usePostShortURLArgs) => {
   const isRejected = status === "rejected";
 
   const getShortUrl = async (data: { sourceUrl: string; short: string }) => {
-    try {
-      setError("");
-      setStatus("pending");
+    setError("");
+    setStatus("pending");
 
-      const result = (await (
-        await fetch(`api/generate-short-url`, {
-          method: "POST",
-          body: JSON.stringify({ ...data }),
-        })
-      ).json()) as ShortUrlResponse;
+    const response = await fetch(`api/generate-short-url`, {
+      method: "POST",
+      body: JSON.stringify({ ...data }),
+    });
 
+    const result = (await response.json()) as ShortUrlResponse | ErrorResponse;
+
+    if ("slug" in result) {
       setData(prevState => [result, ...prevState]);
       setStatus("resolved");
 
       if (typeof onSuccess !== "undefined") {
         onSuccess();
       }
-    } catch (error) {
-      if (error instanceof Error) {
-        setError(error.message);
-      }
+    }
 
+    if ("message" in result) {
+      setError(result.message);
       setStatus("rejected");
     }
   };
