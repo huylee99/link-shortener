@@ -58,7 +58,7 @@ const CreateShortUrl: NextPage = () => {
           <h3 className="font-semibold mb-2">Custom your Short (optional)</h3>
           <div className="flex items-center w-full">
             <div className="flex items-center border border-gray-200 rounded-md overflow-hidden">
-              <span className="p-2 bg-gray-100 w-fit">{window.location.origin}</span>
+              <span className="p-2 bg-gray-100 w-fit whitespace-nowrap">https://link-shortener-tau.vercel.app</span>
               <input
                 type="text"
                 id="short"
