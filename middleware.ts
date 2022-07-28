@@ -5,7 +5,6 @@ export async function middleware(req: NextRequest, ev: NextFetchEvent) {
 
   const data = await fetch(`${req.nextUrl.origin}/api/get-url/${slug}`);
 
-  console.log(data, slug);
   if (data.status === 400) {
     return NextResponse.redirect(`${req.nextUrl.origin}`);
   }
