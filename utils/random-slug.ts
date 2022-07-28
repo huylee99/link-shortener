@@ -1,4 +1,4 @@
-const randomString = (length: number) => {
+const randomSlug = (length: number) => {
   const charset = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
   let result = "";
 
@@ -9,4 +9,4 @@ const randomString = (length: number) => {
   return result;
 };
 
-export default randomString;
+export default randomSlug;

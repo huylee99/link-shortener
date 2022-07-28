@@ -1,15 +1,14 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { prisma } from "../../../server/db/client";
 
-import { prisma } from "../../../db/client";
-
-const slugHandler = async (req: NextApiRequest, res: NextApiResponse) => {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const slug = req.query["slug"];
 
   if (!slug || typeof slug !== "string") {
-    return res.status(404).send(JSON.stringify({ message: "Slug is not valid" }));
+    return res.status(400).send(JSON.stringify({ message: "Slug is not valid" }));
   }
 
-  const data = await prisma.shortLink.findFirst({
+  const short = await prisma.shortLink.findFirst({
     where: {
       slug: {
         equals: slug,
@@ -17,11 +16,9 @@ const slugHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     },
   });
 
-  if (!data) {
-    return res.status(404).send(JSON.stringify({ message: "Slug doesn't exist" }));
+  if (!short) {
+    return res.status(400).send(JSON.stringify({ message: "Not found" }));
   }
 
-  return res.status(201).send(JSON.stringify({ url: data.url }));
-};
-
-export default slugHandler;
+  return res.status(200).send(JSON.stringify({ url: short.url }));
+}
